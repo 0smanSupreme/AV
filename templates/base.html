@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Admin Vote — the official Roblox political debate experience.">
+  <title>{% block title %}Admin Vote — Official Roblox Game Hub{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/app.css">
+  <script defer src="/app.js"></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% if g.user %}
+  <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="{{ url_for('home') }}">
+        <img src="/admin-vote-logo.png" alt="Admin Vote logo">
+        <span>ADMIN <b>VOTE</b></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a href="{{ url_for('home') }}" {% if request.endpoint == 'home' %}aria-current="page"{% endif %}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg> Home
+        </a>
+        {% if g.user.role in ('admin', 'developer') %}
+        <a href="{{ url_for('feedback') }}" {% if request.endpoint and request.endpoint.startswith('feedback') %}aria-current="page"{% endif %}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg> Feedback
+        </a>
+        {% endif %}
+        {% if g.user.role == 'admin' %}
+        <a href="{{ url_for('admin') }}" {% if request.endpoint and request.endpoint.startswith('admin') %}aria-current="page"{% endif %}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Admin
+        </a>
+        {% endif %}
+      </nav>
+      <div class="account-actions">
+        <button class="icon-button" data-theme-toggle aria-label="Switch color theme">
+          <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <div class="account-copy"><strong>{{ g.user.full_name or g.user.email }}</strong><small>{{ role_label[g.user.role] }}</small></div>
+        <form method="post" action="{{ url_for('logout') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="icon-button" aria-label="Sign out" title="Sign out">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>
+          </button>
+        </form>
+      </div>
+      <button class="mobile-toggle" data-mobile-toggle aria-label="Open menu">☰</button>
+    </div>
+    <div class="mobile-nav" data-mobile-nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      {% if g.user.role in ('admin', 'developer') %}<a href="{{ url_for('feedback') }}">Feedback</a>{% endif %}
+      {% if g.user.role == 'admin' %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+      <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button>Sign out</button></form>
+    </div>
+  </header>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="toast-stack" aria-live="polite">
+        {% for category, message in messages %}<div class="toast {{ category }}">{{ message }}<button aria-label="Dismiss">×</button></div>{% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  {% if g.user %}
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <a class="brand" href="{{ url_for('home') }}"><img src="/admin-vote-logo.png" alt=""><span>ADMIN <b>VOTE</b></span></a>
+        <p>Admin Vote — where every voice earns the podium. A Roblox political debate experience.</p>
+      </div>
+      <div class="footer-bottom"><span>© {{ current_year }} Admin Vote. All rights reserved.</span><span>Crafted with <b>♥</b> by the Admin Vote team</span></div>
+    </div>
+  </footer>
+  {% endif %}
+</body>
+</html>

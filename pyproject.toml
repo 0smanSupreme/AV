@@ -1,0 +1,16 @@
+[project]
+name = "admin-vote-roblox"
+version = "1.0.0"
+description = "Python/Flask version of the Admin Vote Roblox website"
+requires-python = ">=3.12"
+dependencies = [
+  "Flask==3.1.2",
+  "Flask-SQLAlchemy==3.1.1",
+  "psycopg[binary]==3.2.9",
+]
+
+[tool.vercel]
+entrypoint = "app:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
