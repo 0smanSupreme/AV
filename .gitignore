@@ -1,7 +1,0 @@
-__pycache__/
-*.py[cod]
-.env
-.venv/
-instance/
-.pytest_cache/
-*.sqlite3
