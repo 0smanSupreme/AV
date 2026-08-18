@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero section">
+  <div class="container narrow center reveal">
+    <h1>ADMIN <span class="gold-text">VOTE</span></h1>
+    <p class="hero-copy">Step up to the podium. State your case. Win the room. The political debate experience where every player's voice can tip the balance of power.</p>
+    <div class="button-row"><a class="button gold" href="#community">◈ Join the Community</a><a class="button outline" href="#team">Meet the Team →</a></div>
+  </div>
+  <div class="container hero-image reveal"><img src="/admin-vote-logo.png" alt="Admin Vote — the glowing gold cube of power"><span></span></div>
+  <p class="image-caption">The Seat of Power — where admins are chosen and debates are decided.</p>
+</section>
+
+<section class="section experience">
+  <div class="container">
+    <div class="section-heading center reveal"><span>The Experience</span><h2>A Debate Like No Other</h2></div>
+    <div class="feature-grid">
+      <article class="feature-card reveal"><div class="feature-image"><img src="/podium.png" alt="A candidate takes the podium"></div><div class="feature-copy"><div class="feature-title"><i>♜</i><h3>Take the Podium</h3></div><p>Rise to the platform, command the microphone, and argue your case before a live audience of voters. Persuasion is power.</p></div></article>
+      <article class="feature-card reveal"><div class="feature-image"><img src="/council.png" alt="The council deliberates"></div><div class="feature-copy"><div class="feature-title"><i>♛</i><h3>The Council Decides</h3></div><p>Behind closed doors, the council weighs every word. Allies, rivals, and swing votes shape who earns the admin seat.</p></div></article>
+    </div>
+    <div class="voice-banner reveal"><i>⌁</i><p><strong>Every voice matters.</strong> We run personal interviews with our players to shape the game's future — feedback logged directly here by our development team.</p></div>
+  </div>
+</section>
+
+<section id="roadmap" class="section roadmap-section">
+  <div class="container">
+    <div class="section-heading center reveal"><span>Development Roadmap</span><h2>What We're Building Next</h2><p>Follow planned features, work currently underway, and the latest released updates.</p></div>
+    {% if roadmap %}
+    <div class="roadmap-grid">
+      {% for item in roadmap %}
+      <article class="roadmap-card {{ item.status }} reveal">
+        <div class="roadmap-top"><span class="roadmap-status">{% if item.status == 'in_progress' %}In progress{% else %}{{ item.status|title }}{% endif %}</span>{% if item.target_date %}<time>{{ item.target_date.strftime('%b %Y') }}</time>{% endif %}</div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.summary or 'More details will be announced soon.' }}</p>
+        <div class="roadmap-line"><i></i></div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="roadmap-empty reveal"><i>◇</i><h3>The next vote is being prepared</h3><p>Roadmap announcements and release updates will appear here.</p></div>
+    {% endif %}
+  </div>
+</section>
+
+<section id="community" class="section">
+  <div class="container">
+    <div class="section-heading center reveal"><span>Stay Connected</span><h2>One Community, Every Platform</h2><p>Follow the debate, join the discussion, and never miss a vote. Find us wherever you are.</p></div>
+    {% if socials %}<div class="social-grid">{% for item in socials %}<a class="social-card reveal" href="{{ item.url }}" target="_blank" rel="noreferrer">{% set icon_path = social_icon_path(item.platform) %}{% if icon_path %}<span class="social-logo"><img src="{{ icon_path }}" alt="{{ item.platform|title }} icon"></span>{% else %}<i>{{ item.platform[0]|upper }}</i>{% endif %}<div><h3>{{ item.label }}</h3><small>{{ item.platform }}</small></div><b>↗</b></a>{% endfor %}</div>
+    {% else %}<p class="empty-copy">Social links will appear here once an admin adds them.</p>{% endif %}
+  </div>
+</section>
+
+<section id="team" class="section team-section">
+  <div class="container">
+    <div class="section-heading center reveal"><span>The People Behind The Podium</span><h2>Management, Moderation & Contributors</h2><p>The dedicated team that built, balances, and elevates the Admin Vote experience.</p></div>
+    {% if team %}
+      {% for group, description in [('Management','The vision-keepers steering Admin Vote forward.'),('Moderation','The keepers of the forum — fairness, order, and integrity.'),('Contributor','The builders, artists, and voices that shaped this project.')] %}
+        {% set members = team|selectattr('team_role','equalto',group)|list %}{% if members %}<div class="team-group"><div class="group-heading"><div><h3>{{ group }}</h3><p>{{ description }}</p></div><span>{{ members|length }} member{% if members|length != 1 %}s{% endif %}</span></div><div class="team-grid">{% for member in members %}<article class="member-card reveal"><div class="member-avatar">{% if member.avatar_url %}<img src="{{ member.avatar_url }}" alt="{{ member.name }}">{% else %}<b>{{ member.name.split()|map('first')|join('')|upper|truncate(2, true, '') }}</b>{% endif %}<span>{{ member.team_role }}</span></div><div class="member-copy"><h3>{{ member.name }}</h3>{% if member.title %}<strong>{{ member.title }}</strong>{% endif %}{% if member.bio %}<p>{{ member.bio }}</p>{% endif %}{% if member.profile_url %}<a href="{{ member.profile_url }}" target="_blank" rel="noreferrer">View profile ↗</a>{% endif %}</div></article>{% endfor %}</div></div>{% endif %}
+      {% endfor %}
+    {% else %}<p class="empty-copy">Team members will appear here once an admin adds them.</p>{% endif %}
+  </div>
+</section>
+{% endblock %}

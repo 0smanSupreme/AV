@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}My Profile — Admin Vote{% endblock %}
+{% block content %}
+<section class="page-shell container profile-width">
+  <div class="page-heading"><div><span>Account</span><h1>My Profile</h1><p>Manage how your Admin Vote account appears.</p></div></div>
+  <div class="profile-layout">
+    <aside class="profile-summary panel">
+      <div class="profile-picture large">{% if g.user.avatar %}<img src="{{ url_for('profile_picture', user_id=g.user.id) }}" alt="{{ g.user.display_name }}">{% else %}<span>{{ g.user.display_name[0]|upper }}</span>{% endif %}</div>
+      <h2>{{ g.user.display_name }}</h2><p>@{{ g.user.username }}</p><b>{{ role_label[g.user.role] }}</b>
+      {% if g.user.role == 'user' %}<small>Member accounts can be promoted to Developer by an administrator.</small>{% endif %}
+    </aside>
+    <form class="panel form-stack profile-form" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <h2>Edit profile</h2>
+      <label>Username<input value="{{ g.user.username }}" disabled><small>Usernames cannot be changed.</small></label>
+      <label>Display name<input name="display_name" value="{{ g.user.display_name }}" maxlength="50" required></label>
+      <label>New profile picture<input class="file-input" type="file" name="avatar" accept="image/png,image/jpeg,image/gif,image/webp"><small>PNG, JPG, GIF, or WebP — maximum 700 KB</small></label>
+      {% if g.user.avatar %}<label class="check-label"><input type="checkbox" name="remove_avatar" value="1"> Remove current profile picture</label>{% endif %}
+      <div class="profile-divider"><span>Change password</span></div>
+      <label>Current password<input type="password" name="current_password" autocomplete="current-password"></label>
+      <label>New password<input type="password" name="new_password" minlength="8" autocomplete="new-password" placeholder="Leave blank to keep your password"></label>
+      <button class="button gold" type="submit">Save profile</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

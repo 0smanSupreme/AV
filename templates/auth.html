@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'register' %}Create account{% else %}Log in{% endif %} — Admin Vote{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-wrap {% if mode == 'register' %}register-wrap{% endif %}">
+    <div class="auth-heading">
+      <div class="auth-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+      {% if mode == 'register' %}<h1>Create your account</h1><p>No email required — choose your own username and password</p>
+      {% else %}<h1>Welcome back</h1><p>Log in with your Admin Vote account</p>{% endif %}
+    </div>
+
+    <div class="auth-card">
+      {% if mode == 'register' %}
+      <form method="post" enctype="multipart/form-data" class="form-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="register-grid">
+          <label>Username<input name="username" value="{{ request.form.get('username','') }}" pattern="[A-Za-z0-9_]{3,24}" maxlength="24" placeholder="your_username" autocomplete="username" required autofocus><small>3–24 letters, numbers, or underscores</small></label>
+          <label>Display name<input name="display_name" value="{{ request.form.get('display_name','') }}" maxlength="50" placeholder="How your name appears" required></label>
+        </div>
+        <label>Profile picture <span class="optional">Optional</span><input class="file-input" type="file" name="avatar" accept="image/png,image/jpeg,image/gif,image/webp"><small>PNG, JPG, GIF, or WebP — maximum 700 KB</small></label>
+        <div class="register-grid">
+          <label>Password<input type="password" name="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required></label>
+          <label>Confirm password<input type="password" name="confirm_password" minlength="8" autocomplete="new-password" placeholder="Enter it again" required></label>
+        </div>
+        <button class="button primary" type="submit">Create account</button>
+      </form>
+      {% else %}
+      <form method="post" class="form-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="return_to" value="{{ return_to }}">
+        <label>Username<div class="input-icon"><span>@</span><input name="username" autocomplete="username" placeholder="your_username" required autofocus></div></label>
+        <label>Password<div class="input-icon"><span>◆</span><input type="password" name="password" autocomplete="current-password" placeholder="Your password" required></div></label>
+        <button class="button primary" type="submit">Log in</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <p class="auth-footer">
+      {% if mode == 'register' %}Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+      {% else %}New here? <a href="{{ url_for('register') }}">Create an account</a>{% endif %}
+      <br><a class="back-home" href="{{ url_for('home') }}">← Continue to the public website</a>
+    </p>
+  </div>
+</section>
+{% endblock %}
